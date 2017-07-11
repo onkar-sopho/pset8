@@ -4,9 +4,7 @@
     require(__DIR__ . "/../includes/config.php");
         
     // TODO
-    
-    $file = "../../pset8/US.txt";
- 
+    $file = $argv[1];
     
     if (is_readable($file))
     {
