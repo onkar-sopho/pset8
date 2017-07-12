@@ -14,6 +14,7 @@
     $geo = explode(" ", $geo);
     $counter = count($geo);
     
+    // Input is a single query
     if ($counter === 1)
     {
     	$geo = $geo[0];
@@ -45,6 +46,18 @@
     		$places = CS50::query("SELECT * FROM places WHERE admin_name1 LIKE ?", $geo);
     	}
     }
+    
+    
+    // Input is combination of queries 
+    else if($counter > 1)
+    {
+    	// Join the words in $geo back into one long string (space seperated)
+    	$geo = implode(" ", $geo);
+    	
+    	// Search across multiple columns
+    	$places = CS50::query("SELECT * FROM places WHERE MATCH(postal_code, place_name, admin_name1, admin_code1) AGAINST (?)", $geo);
+    }
+    
    
     // output places as JSON (pretty-printed for debugging convenience)
     header("Content-type: application/json");
