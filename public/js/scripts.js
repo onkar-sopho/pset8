@@ -96,6 +96,43 @@ function addMarker(place) {
 
     markers.push(marker);
 
+
+
+    // Create an info window
+    marker.info = new google.maps.InfoWindow({
+
+        // Set up the ajax loader gif
+        content: "<div id='articles'><img id='loader' src='img/ajax-loader.gif' /></div>"
+
+    });
+
+    // Parameter for JSON array:
+    var parameter = "geo=" + place["postal_code"];
+
+    // Adding an onCLick Listener to show the news on clicking the marker:
+    google.maps.event.addListener(marker, "click", function(e) {
+
+        marker.info.open(map, this);
+
+        var html = ["<ul>"];
+
+        // Modify the html and load the news articles
+        $.getJSON("articles.php", parameter)
+
+        .done(function(data) {
+            $.each(data, function(i, item) {
+                html.push("<li><a href='" + item.link + "' target='_blank'>" + item.title + "</a></li>");
+            });
+            html.push("</ul>");
+            marker.info.setContent(html.join("\n"));
+        })
+
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown.toString());
+        });
+    });
+
+
 }
 
 /**
