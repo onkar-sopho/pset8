@@ -29,18 +29,18 @@ $(function() {
         {
             featureType: "all",
             elementType: "labels",
-            stylers: [
-                {visibility: "off"}
-            ]
+            stylers: [{
+                visibility: "off"
+            }]
         },
 
         // hide roads
         {
             featureType: "road",
             elementType: "geometry",
-            stylers: [
-                {visibility: "off"}
-            ]
+            stylers: [{
+                visibility: "off"
+            }]
         }
 
     ];
@@ -48,7 +48,10 @@ $(function() {
     // options for map
     // https://developers.google.com/maps/documentation/javascript/reference#MapOptions
     var options = {
-        center: {lat: 37.4236, lng: -122.1619}, // Stanford, California
+        center: {
+            lat: 42.3770,
+            lng: -71.1256
+        }, // Cambridge, Massachusetts
         disableDefaultUI: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         maxZoom: 14,
@@ -72,16 +75,35 @@ $(function() {
 /**
  * Adds marker for place to map.
  */
-function addMarker(place)
-{
+function addMarker(place) {
+
     // TODO
+    var lat = place["latitude"];
+    var lng = place["longitude"];
+    var myLatlng = new google.maps.LatLng(-25.363882, 131.044922);
+
+    var myLatLng = {
+        lat: -25.363,
+        lng: 131.044
+    };
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: myLatLng
+    });
+
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: 'Hello World!'
+    });
+
 }
 
 /**
  * Configures application.
  */
-function configure()
-{
+function configure() {
     // update UI after map has been dragged
     google.maps.event.addListener(map, "dragend", function() {
         update();
@@ -103,8 +125,7 @@ function configure()
         autoselect: true,
         highlight: true,
         minLength: 1
-    },
-    {
+    }, {
         source: search,
         templates: {
             empty: "no places found yet",
@@ -120,7 +141,10 @@ function configure()
         var longitude = (_.isNumber(suggestion.longitude)) ? suggestion.longitude : parseFloat(suggestion.longitude);
 
         // set map's center
-        map.setCenter({lat: latitude, lng: longitude});
+        map.setCenter({
+            lat: latitude,
+            lng: longitude
+        });
 
         // update UI
         update();
@@ -134,8 +158,8 @@ function configure()
     // re-enable ctrl- and right-clicking (and thus Inspect Element) on Google Map
     // https://chrome.google.com/webstore/detail/allow-right-click/hompjdfbfmmmgflfjdlnkohcplmboaeo?hl=en
     document.addEventListener("contextmenu", function(event) {
-        event.returnValue = true; 
-        event.stopPropagation && event.stopPropagation(); 
+        event.returnValue = true;
+        event.stopPropagation && event.stopPropagation();
         event.cancelBubble && event.cancelBubble();
     }, true);
 
@@ -149,55 +173,49 @@ function configure()
 /**
  * Hides info window.
  */
-function hideInfo()
-{
+function hideInfo() {
     info.close();
 }
 
 /**
  * Removes markers from map.
  */
-function removeMarkers()
-{
+function removeMarkers() {
     // TODO
 }
 
 /**
  * Searches database for typeahead's suggestions.
  */
-function search(query, cb)
-{
+function search(query, cb) {
     // get places matching query (asynchronously)
     var parameters = {
         geo: query
     };
     $.getJSON("search.php", parameters)
-    .done(function(data, textStatus, jqXHR) {
+        .done(function(data, textStatus, jqXHR) {
 
-        // call typeahead's callback with search results (i.e., places)
-        cb(data);
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
+            // call typeahead's callback with search results (i.e., places)
+            cb(data);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
 
-        // log error to browser's console
-        console.log(errorThrown.toString());
-    });
+            // log error to browser's console
+            console.log(errorThrown.toString());
+        });
 }
 
 /**
  * Shows info window at marker with content.
  */
-function showInfo(marker, content)
-{
+function showInfo(marker, content) {
     // start div
     var div = "<div id='info'>";
-    if (typeof(content) === "undefined")
-    {
+    if (typeof(content) === "undefined") {
         // http://www.ajaxload.info/
         div += "<img alt='loading' src='img/ajax-loader.gif'/>";
     }
-    else
-    {
+    else {
         div += content;
     }
 
@@ -214,8 +232,7 @@ function showInfo(marker, content)
 /**
  * Updates UI's markers.
  */
-function update() 
-{
+function update() {
     // get map's bounds
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
@@ -228,20 +245,19 @@ function update()
         sw: sw.lat() + "," + sw.lng()
     };
     $.getJSON("update.php", parameters)
-    .done(function(data, textStatus, jqXHR) {
+        .done(function(data, textStatus, jqXHR) {
 
-        // remove old markers from map
-        removeMarkers();
+            // remove old markers from map
+            removeMarkers();
 
-        // add new markers to map
-        for (var i = 0; i < data.length; i++)
-        {
-            addMarker(data[i]);
-        }
-     })
-     .fail(function(jqXHR, textStatus, errorThrown) {
+            // add new markers to map
+            for (var i = 0; i < data.length; i++) {
+                addMarker(data[i]);
+            }
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
 
-         // log error to browser's console
-         console.log(errorThrown.toString());
-     });
+            // log error to browser's console
+            console.log(errorThrown.toString());
+        });
 }
