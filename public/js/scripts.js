@@ -80,23 +80,21 @@ function addMarker(place) {
     // TODO
     var lat = place["latitude"];
     var lng = place["longitude"];
-    var myLatlng = new google.maps.LatLng(-25.363882, 131.044922);
+    var myLatlng = new google.maps.LatLng(lat, lng);
+    var label = place["place_name"] + ", " + place["admin_name1"];
 
-    var myLatLng = {
-        lat: -25.363,
-        lng: 131.044
-    };
+    var marker = new MarkerWithLabel({
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 4,
-        center: myLatLng
-    });
-
-    var marker = new google.maps.Marker({
-        position: myLatLng,
+        position: myLatlng,
         map: map,
-        title: 'Hello World!'
+        draggable: false,
+        labelContent: label,
+        labelAnchor: new google.maps.Point(50, -10),
+        labelInBackground: false
+
     });
+
+    markers.push(marker);
 
 }
 
