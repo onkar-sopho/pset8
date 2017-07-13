@@ -82,17 +82,25 @@ function addMarker(place) {
     var lng = place["longitude"];
     var myLatlng = new google.maps.LatLng(lat, lng);
     var label = place["place_name"] + ", " + place["admin_name1"];
+    
+    var image = 'img/image.jpg';
 
+    
     var marker = new MarkerWithLabel({
 
         position: myLatlng,
         map: map,
+        icon: image,
         draggable: false,
+        //animation: google.maps.Animation.DROP,
         labelContent: label,
         labelAnchor: new google.maps.Point(50, -10),
         labelInBackground: false
 
     });
+
+    //marker.addListener('click', toggleBounce);
+    
 
     markers.push(marker);
 
@@ -113,7 +121,9 @@ function addMarker(place) {
     google.maps.event.addListener(marker, "click", function(e) {
 
         marker.info.open(map, this);
-
+        
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        
         var html = ["<ul>"];
 
         // Modify the html and load the news articles
@@ -220,7 +230,7 @@ function removeMarkers() {
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
-    markers = [];
+    markers.length = 0;
 }
 
 /**
