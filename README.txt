@@ -1,3 +1,18 @@
+                           ###################
+                                 MASHUP
+                           ###################
+                        
+**********************************************************
+Project completed by: ONKAR
+                      Second Generation, SophomoreS.in
+                      SID: 2078
+**********************************************************
+
+How to run the website:
+To run the website, type the following command in the terminal :
+      apache50 start ~/workspace/pset8/public
+
+
 Objectives completed in this pset:
 
 1. Introduced and worked on JavaScript, JSON and Ajax.
